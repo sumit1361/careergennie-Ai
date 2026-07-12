@@ -1,0 +1,12 @@
+node_modules/
+.env
+
+client/node_modules/
+
+ml/venv/
+__pycache__/
+
+*.pyc
+
+dist/
+build/
