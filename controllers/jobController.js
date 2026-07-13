@@ -32,7 +32,6 @@ const createJob = async (req, res, next) => {
 /**
  * @route   GET /api/jobs
  * @access  Public
- * Returns all open (non-expired) jobs, most recent first.
  */
 const listJobs = async (req, res, next) => {
   try {
@@ -49,8 +48,6 @@ const listJobs = async (req, res, next) => {
 /**
  * @route   GET /api/jobs/mine
  * @access  Private (recruiter)
- * Returns all jobs posted by the logged-in recruiter, regardless of
- * moderation status, for their dashboard.
  */
 const listMyJobs = async (req, res, next) => {
   try {
@@ -134,11 +131,13 @@ const deleteJob = async (req, res, next) => {
   }
 };
 
-module.exports = { createJob, listJobs, listMyJobs, getJob, updateJob, deleteJob };
-// At the bottom of resumeController.js, jobController.js, etc.
-// ... your job fetching, creation, and moderation logic above ...
-
-module.exports = {
-    getJobs,
-    createJob
+// Aliased getJobs mapping specifically to resolve the jobRoutes execution crash
+module.exports = { 
+  createJob, 
+  listJobs, 
+  getJobs: listJobs, 
+  listMyJobs, 
+  getJob, 
+  updateJob, 
+  deleteJob 
 };
