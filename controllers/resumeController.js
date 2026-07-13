@@ -1,9 +1,6 @@
-const axios = require('axios');
-const pdfParse = require('pdf-parse');
 const Resume = require('../models/Resume');
-
-
-
+const analyzeResume = require('../services/geminiService');
+const pdfParse = require('pdf-parse');
 
 /**
  * runAnalyzer
@@ -11,26 +8,7 @@ const Resume = require('../models/Resume');
  * with the parsed JSON object printed on stdout. stderr is only used for
  * diagnostics (spaCy warnings, import noise) and never parsed as data.
  */
-const runAnalyzer = async (resumeText, jobDescriptionText) => {
-  try {
-    const response = await axios.post(
-      `${process.env.ML_API_URL}/analyze`,
-      {
-        resume_text: resumeText,
-        job_text: jobDescriptionText || ""
-      }
-    );
 
-    return response.data;
-
-  } catch (error) {
-    throw new Error(
-      `ML service failed: ${
-        error.response?.data?.detail || error.message
-      }`
-    );
-  }
-};
 
 /**
  * @route   POST /api/resume/upload
@@ -67,7 +45,7 @@ const uploadResume = async (req, res, next) => {
     const jobDescription = req.body.jobDescription;
     const jdText = typeof jobDescription === 'string' ? jobDescription : '';
 
-    const analysis = await runAnalyzer(rawText, jdText);
+    const analysis = await analyzeResume(rawText, jdText);
 
     // Expected analyzer.py output shape:
     // {
