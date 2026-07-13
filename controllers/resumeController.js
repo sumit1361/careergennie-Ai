@@ -1,10 +1,10 @@
-const path = require('path');
-const { spawn } = require('child_process');
+const axios = require('axios');
+const pdfParse = require('pdf-parse');
+const Resume = require('../models/Resume');
 const pdfParse = require('pdf-parse');
 const Resume = require('../models/Resume');
 
-const ANALYZER_PATH = path.join(__dirname, '..', '..', 'ml', 'analyzer.py');;
-const PYTHON_BIN = process.env.PYTHON_BIN || 'python';;
+
 
 /**
  * runAnalyzer
@@ -12,53 +12,25 @@ const PYTHON_BIN = process.env.PYTHON_BIN || 'python';;
  * with the parsed JSON object printed on stdout. stderr is only used for
  * diagnostics (spaCy warnings, import noise) and never parsed as data.
  */
-const runAnalyzer = (resumeText, jobDescriptionText) => {
-  return new Promise((resolve, reject) => {
-    const child = spawn(PYTHON_BIN, [ANALYZER_PATH, resumeText, jobDescriptionText], {
-      // Keep argv-based piping simple and explicit; no shell interpolation.
-      shell: false,
-    });
-
-    let stdoutData = '';
-    let stderrData = '';
-
-    child.stdout.on('data', (chunk) => {
-      stdoutData += chunk.toString();
-    });
-
-    child.stderr.on('data', (chunk) => {
-      stderrData += chunk.toString();
-    });
-
-    child.on('error', (err) => {
-      // e.g. python3 binary not found
-      reject(new Error(`Failed to start analyzer process: ${err.message}`));
-    });
-
-    child.on('close', (code) => {
-      if (code !== 0) {
-        reject(
-          new Error(
-            `Analyzer exited with code ${code}. stderr: ${stderrData.trim() || '(empty)'}`
-          )
-        );
-        return;
+const runAnalyzer = async (resumeText, jobDescriptionText) => {
+  try {
+    const response = await axios.post(
+      `${process.env.ML_API_URL}/analyze`,
+      {
+        resume_text: resumeText,
+        job_text: jobDescriptionText || ""
       }
+    );
 
-      try {
-        // Contract: exactly one line of pure JSON on stdout.
-        const line = stdoutData.trim().split('\n').pop();
-        const parsed = JSON.parse(line);
-        resolve(parsed);
-      } catch (parseErr) {
-        reject(
-          new Error(
-            `Failed to parse analyzer stdout as JSON: ${parseErr.message}. Raw stdout: ${stdoutData}`
-          )
-        );
-      }
-    });
-  });
+    return response.data;
+
+  } catch (error) {
+    throw new Error(
+      `ML service failed: ${
+        error.response?.data?.detail || error.message
+      }`
+    );
+  }
 };
 
 /**
