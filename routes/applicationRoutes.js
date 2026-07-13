@@ -1,9 +1,6 @@
 const express = require('express');
 
-const authMiddleware = require('../middleware/auth');
-console.log("AUTH DEBUG:", authMiddleware);
 
-const { protect, checkRole } = authMiddleware;
 
 const {
   applyToJob,
