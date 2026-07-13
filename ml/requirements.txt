@@ -1,8 +1,6 @@
-spacy>=3.7,<3.8
-scikit-learn>=1.4,<1.6
-
-# After pip install, download the spaCy English model separately:
-#   python -m spacy download en_core_web_sm
-#
-# Note: PDF text extraction happens in Node (pdf-parse, see package.json),
-# not here — analyzer.py only ever receives already-extracted plain text.
+fastapi
+uvicorn
+spacy
+scikit-learn
+numpy
+pydantic
