@@ -1,19 +1,25 @@
-const express = require('express');
-const { uploadResume, getMyResumes } = require('../controllers/resumeController');
-const { protect, checkRole } = require('../middleware/auth');
-const uploadResumePdf = require('../middleware/uploadResumePdf');
-
+const express = require("express");
 const router = express.Router();
 
-// multer runs first: parses multipart/form-data, populates req.file (the PDF)
-// and req.body (any accompanying text fields, e.g. jobDescription).
+const {
+    uploadResume,
+    getMyResumes
+} = require("../controllers/resumeController");
+
+const auth = require("../middleware/auth");
+const upload = require("../middleware/uploadResumePdf");
+
 router.post(
-  '/upload',
-  protect,
-  checkRole(['student']),
-  uploadResumePdf.single('resume'),
-  uploadResume
+    "/upload",
+    auth,
+    upload.single("resume"),
+    uploadResume
 );
-router.get('/mine', protect, checkRole(['student']), getMyResumes);
+
+router.get(
+    "/mine",
+    auth,
+    getMyResumes
+);
 
 module.exports = router;
