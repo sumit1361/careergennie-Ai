@@ -106,7 +106,10 @@ const getMyResumes = async (req, res, next) => {
 
 
 
+// At the bottom of resumeController.js, jobController.js, etc.
 module.exports = {
-  uploadResume,
-  getMyResumes
+    // Add your exact function names here
+    uploadResume,
+    getJobs,
+    createJob
 };

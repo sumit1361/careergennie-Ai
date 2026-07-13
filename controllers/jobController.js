@@ -135,3 +135,10 @@ const deleteJob = async (req, res, next) => {
 };
 
 module.exports = { createJob, listJobs, listMyJobs, getJob, updateJob, deleteJob };
+// At the bottom of resumeController.js, jobController.js, etc.
+module.exports = {
+    // Add your exact function names here
+    uploadResume,
+    getJobs,
+    createJob
+};
