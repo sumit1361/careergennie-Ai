@@ -1,21 +1,61 @@
-const express = require('express');
-const {
-  createJob,
-  listJobs,
-  listMyJobs,
-  getJob,
-  updateJob,
-  deleteJob,
-} = require('../controllers/jobController');
-const { protect, checkRole } = require('../middleware/auth');
+const jwt = require("jsonwebtoken");
 
-const router = express.Router();
 
-router.get('/', listJobs);
-router.get('/mine', protect, checkRole(['recruiter']), listMyJobs);
-router.get('/:id', getJob);
-router.post('/', protect, checkRole(['recruiter']), createJob);
-router.patch('/:id', protect, checkRole(['recruiter']), updateJob);
-router.delete('/:id', protect, checkRole(['recruiter']), deleteJob);
+const protect = (req, res, next) => {
 
-module.exports = router;
+    try {
+
+        const token = req.headers.authorization?.split(" ")[1];
+
+        if (!token) {
+            return res.status(401).json({
+                message: "No token provided"
+            });
+        }
+
+
+        const decoded = jwt.verify(
+            token,
+            process.env.JWT_SECRET
+        );
+
+
+        req.user = decoded;
+
+        next();
+
+
+    } catch(error) {
+
+        return res.status(401).json({
+            message: "Invalid token"
+        });
+
+    }
+};
+
+
+
+const checkRole = (roles) => {
+
+    return (req, res, next) => {
+
+        if (!roles.includes(req.user.role)) {
+
+            return res.status(403).json({
+                message: "Access denied"
+            });
+
+        }
+
+        next();
+    };
+
+};
+
+
+
+module.exports = {
+    protect,
+    checkRole
+};
