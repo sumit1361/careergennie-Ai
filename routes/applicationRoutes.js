@@ -1,19 +1,9 @@
 const express = require('express');
-
-
-
-const {
-  applyToJob,
-  getMyApplications,
-  getApplicationsForJob,
-  updateApplicationStatus,
-} = require('../controllers/applicationController');
-
 const router = express.Router();
+const { applyToJob, getApplications } = require('../controllers/applicationController'); // Replace with your exact function names
+const { protect } = require('../middleware/auth');
 
-router.post('/', protect, checkRole(['student']), applyToJob);
-router.get('/mine', protect, checkRole(['student']), getMyApplications);
-router.get('/job/:jobId', protect, checkRole(['recruiter']), getApplicationsForJob);
-router.patch('/:id/status', protect, checkRole(['recruiter']), updateApplicationStatus);
+router.post('/apply', protect, applyToJob);
+router.get('/mine', protect, getApplications);
 
 module.exports = router;
