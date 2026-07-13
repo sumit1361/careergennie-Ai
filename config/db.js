@@ -1,4 +1,4 @@
-console.log("MONGO_URI:", process.env.MONGO_URI);
+
 console.log("Loaded:", !!process.env.MONGO_URI);
 
  mongoose = require('mongoose');
