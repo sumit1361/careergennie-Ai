@@ -1,95 +1,36 @@
-const Resume = require('../models/Resume');
-const analyzeResume = require('../service/geminiService');
-const pdfParse = require('pdf-parse');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-/**
- * runAnalyzer
- * Spawns `ml/analyzer.py <resumeText> <jobDescriptionText>` and resolves
- * with the parsed JSON object printed on stdout. stderr is only used for
- * diagnostics (spaCy warnings, import noise) and never parsed as data.
- */
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+async function analyzeResume(resumeText, jobText = "") {
 
-/**
- * @route   POST /api/resume/upload
- * @access  Private (student)
- * Body: { rawText: string, jobDescription: string }
- */
-const uploadResume = async (req, res, next) => {
-  try {
-    let rawText = req.body.rawText;
-
-    // Primary path: a PDF was uploaded via multipart/form-data (field name "resume"),
-    // handled by middleware/uploadResumePdf.js -> req.file.buffer.
-    if (req.file) {
-      try {
-        const parsedPdf = await pdfParse(req.file.buffer);
-        rawText = parsedPdf.text;
-      } catch (pdfErr) {
-        return res.status(400).json({
-          success: false,
-          message: `Could not read PDF: ${pdfErr.message}`,
-        });
-      }
-    }
-
-    if (!rawText || typeof rawText !== 'string' || !rawText.trim()) {
-      return res.status(400).json({
-        success: false,
-        message: 'A PDF file (field "resume") or non-empty rawText is required',
-      });
-    }
-
-    // Job description is optional at upload time; default to empty string so
-    // the Python script can still run skill extraction / partial scoring.
-    const jobDescription = req.body.jobDescription;
-    const jdText = typeof jobDescription === 'string' ? jobDescription : '';
-
-    const analysis = await analyzeResume(rawText, jdText);
-
-    // Expected analyzer.py output shape:
-    // {
-    //   "skills": ["React", "Node.js", ...],
-    //   "experienceYears": 3,
-    //   "matchPercentage": 78,
-    //   "score": 82,
-    //   "suggestions": ["Add more quantifiable achievements", ...]
-    // }
-
-    const resume = await Resume.create({
-      studentId: req.user._id,
-      rawText,
-      parsedProfile: {
-        skills: analysis.skills || [],
-        experienceYears: analysis.experienceYears || 0,
-      },
-      aiFeedback: {
-        score: analysis.score ?? analysis.matchPercentage ?? 0,
-        suggestions: analysis.suggestions || [],
-      },
+    const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash"
     });
 
-    res.status(201).json({
-      success: true,
-      resume,
-      matchPercentage: analysis.matchPercentage ?? null,
-    });
-  } catch (err) {
-    next(err);
-  }
-};
+    const prompt = `
+Analyze this resume and return ONLY valid JSON.
 
-/**
- * @route   GET /api/resume/mine
- * @access  Private (student)
- */
-const getMyResumes = async (req, res, next) => {
-  try {
-    const resumes = await Resume.find({ studentId: req.user._id }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, count: resumes.length, resumes });
-  } catch (err) {
-    next(err);
-  }
-};
+Format:
+{
+  "skills": [],
+  "experienceYears": 0,
+  "score": 0,
+  "suggestions": []
+}
 
-module.exports = { uploadResume, getMyResumes };
+Resume:
+${resumeText}
+
+Job Description:
+${jobText}
+`;
+
+    const result = await model.generateContent(prompt);
+
+    const response = result.response.text();
+
+    return JSON.parse(response);
+}
+
+module.exports = analyzeResume;
