@@ -1,0 +1,309 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer base {
+
+  body {
+    color: #f4f4f5;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: 'Inter', sans-serif;
+
+    background:
+      radial-gradient(
+        circle at 10% 20%,
+        rgba(177,0,255,0.08),
+        transparent 40%
+      ),
+      radial-gradient(
+        circle at 90% 80%,
+        rgba(0,117,255,0.08),
+        transparent 45%
+      ),
+      #060b26;
+  }
+
+  h1,h2,h3,h4 {
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+}
+
+
+
+@layer components {
+
+
+/* Main Glass Card */
+
+.vision-card {
+
+  background: rgba(15,23,42,0.65);
+  backdrop-filter: blur(20px);
+
+  border:
+    1px solid rgba(255,255,255,0.08);
+
+  border-radius: 1rem;
+
+  padding: 1.5rem;
+
+  transition:
+    all 0.3s ease;
+
+}
+
+
+.vision-card:hover {
+
+  background:
+    rgba(15,23,42,0.85);
+
+  border-color:
+    rgba(255,255,255,0.15);
+
+  box-shadow:
+    0 0 20px rgba(0,117,255,0.15);
+
+}
+
+
+
+.vision-card-glow-purple:hover {
+
+  box-shadow:
+    0 0 20px rgba(177,0,255,0.15);
+
+}
+
+
+
+/* Primary Button */
+
+.vision-btn-primary {
+
+  background:
+    linear-gradient(
+      135deg,
+      #0075ff,
+      #00d4ff
+    );
+
+  color:white;
+
+  font-weight:600;
+
+  padding:
+    0.625rem 1.25rem;
+
+  border-radius:
+    0.75rem;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:0.5rem;
+
+  transition:
+    all .3s ease;
+
+}
+
+
+
+.vision-btn-primary:hover {
+
+  box-shadow:
+    0 0 25px rgba(0,117,255,.5);
+
+  transform:
+    scale(.97);
+
+}
+
+
+
+/* Purple Button */
+
+.vision-btn-purple {
+
+  background:
+    linear-gradient(
+      135deg,
+      #b100ff,
+      #ff00d4
+    );
+
+  color:white;
+
+  font-weight:600;
+
+  padding:
+    0.625rem 1.25rem;
+
+  border-radius:
+    0.75rem;
+
+  display:flex;
+
+  align-items:center;
+
+  justify-content:center;
+
+  gap:.5rem;
+
+}
+
+
+
+.vision-btn-purple:hover {
+
+  box-shadow:
+    0 0 25px rgba(177,0,255,.5);
+
+}
+
+
+
+/* Secondary Button */
+
+.vision-btn-secondary {
+
+  background:
+    rgba(255,255,255,.04);
+
+  color:#d4d4d8;
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  padding:
+    .625rem 1.25rem;
+
+  border-radius:
+    .75rem;
+
+  transition:.3s;
+
+}
+
+
+
+.vision-btn-secondary:hover {
+
+  background:
+    rgba(255,255,255,.08);
+
+  color:white;
+
+}
+
+
+
+/* Inputs */
+
+.vision-input {
+
+  width:100%;
+
+  background:
+    rgba(8,13,48,.6);
+
+  border:
+    1px solid rgba(255,255,255,.08);
+
+  color:white;
+
+  padding:
+    .75rem 1rem;
+
+  border-radius:
+    .75rem;
+
+  outline:none;
+
+}
+
+
+
+.vision-input::placeholder {
+
+  color:#71717a;
+
+}
+
+
+.vision-input:focus {
+
+  border-color:#0075ff;
+
+  box-shadow:
+    0 0 10px rgba(0,117,255,.3);
+
+}
+
+
+
+}
+
+
+/* Glow utilities */
+
+.radial-glow-cyan {
+
+background:
+radial-gradient(
+circle,
+rgba(0,245,255,.15),
+transparent 70%
+);
+
+}
+
+
+.radial-glow-purple {
+
+background:
+radial-gradient(
+circle,
+rgba(177,0,255,.15),
+transparent 70%
+);
+
+}
+
+
+
+/* Compatibility classes */
+
+.cg-card {
+  background: rgba(15,23,42,0.65);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 1rem;
+  padding: 1.5rem;
+}
+
+
+.cg-btn-primary {
+  background: linear-gradient(135deg,#0075ff,#00d4ff);
+  color:white;
+  font-weight:600;
+  padding:.625rem 1.25rem;
+  border-radius:.75rem;
+}
+
+
+.cg-input {
+  width:100%;
+  background:rgba(8,13,48,.6);
+  border:1px solid rgba(255,255,255,.08);
+  color:white;
+  padding:.75rem 1rem;
+  border-radius:.75rem;
+}
