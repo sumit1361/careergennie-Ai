@@ -1,11 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-// CORRECT FIX: Explicitly destructure your keys from the required module path
+// Explicit destructuring ensures Express hooks actual functions for callbacks
 const { signup, login, me } = require('../controllers/authController');
+const { protect } = require('../middleware/auth');
 
-// If line 7 looks like this, it will now correctly find the "signup" function:
-router.post('/signup', signup); 
+// Verified functional route mappings
+router.post('/signup', signup);
 router.post('/login', login);
+router.get('/me', protect, me);
 
 module.exports = router;

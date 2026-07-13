@@ -12,6 +12,9 @@ const me = async (req, res, next) => {
 };
 
 // CRITICAL FIX: They MUST be exported explicitly as properties of module.exports
+// ... Your existing signup, login, and me controller function logic remains untouched above ...
+
+// Strict CommonJS exports matching the router expectations
 module.exports = {
     signup,
     login,
