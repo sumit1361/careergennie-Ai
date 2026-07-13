@@ -130,11 +130,9 @@ const getStats = async (req, res, next) => {
   }
 };
 
+// ... your moderation, user management, and stats logic above ...
+
 module.exports = {
-  listJobsForModeration,
-  approveJob,
-  rejectJob,
-  listUsers,
-  updateUserRole,
-  getStats,
+    getStats,
+    moderateJob
 };

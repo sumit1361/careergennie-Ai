@@ -131,10 +131,9 @@ const updateApplicationStatus = async (req, res, next) => {
     next(err);
   }
 };
+// ... your job application handling logic above ...
 
 module.exports = {
-  applyToJob,
-  getMyApplications,
-  getApplicationsForJob,
-  updateApplicationStatus,
+    applyToJob,
+    getApplications
 };
