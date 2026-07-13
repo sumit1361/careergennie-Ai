@@ -1,36 +1,20 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const express = require("express");
+const router = express.Router();
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const { uploadResume, getMyResumes } = require("../controllers/resumeController");
 
-async function analyzeResume(resumeText, jobText = "") {
+const auth = require("../middleware/auth");
 
-    const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash"
-    });
+router.post(
+    "/upload",
+    auth,
+    uploadResume
+);
 
-    const prompt = `
-Analyze this resume and return ONLY valid JSON.
+router.get(
+    "/mine",
+    auth,
+    getMyResumes
+);
 
-Format:
-{
-  "skills": [],
-  "experienceYears": 0,
-  "score": 0,
-  "suggestions": []
-}
-
-Resume:
-${resumeText}
-
-Job Description:
-${jobText}
-`;
-
-    const result = await model.generateContent(prompt);
-
-    const response = result.response.text();
-
-    return JSON.parse(response);
-}
-
-module.exports = analyzeResume;
+module.exports = router;
