@@ -1,12 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const { getJobs, createJob } = require('../controllers/jobController');
+const { protect } = require('../middleware/auth');
 
-// Import BOTH protect and checkRole from the authentication middleware
-const { protect, checkRole } = require('../middleware/auth');
+// Inline role check to preserve your auth.js layout
+const checkRecruiterOrAdmin = (req, res, next) => {
+  if (!req.user || (req.user.role !== 'recruiter' && req.user.role !== 'admin')) {
+    return res.status(403).json({
+      success: false,
+      message: "Forbidden: Only recruiters or admins can post jobs"
+    });
+  }
+  next();
+};
 
-// Perfect positional middleware verification sequences
 router.get('/', getJobs);
-router.post('/', protect, checkRole(['recruiter', 'admin']), createJob);
+router.post('/', protect, checkRecruiterOrAdmin, createJob);
 
 module.exports = router;
