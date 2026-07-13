@@ -1,25 +1,14 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
-const {
-    uploadResume,
-    getMyResumes
-} = require("../controllers/resumeController");
+// Clean destructuring without any structural syntax typos
+const { uploadResume } = require('../controllers/resumeController'); 
 
-const auth = require("../middleware/auth");
-const upload = require("../middleware/uploadResumePdf");
+// Standard middleware declarations
+const uploadResumePdf = require('../middleware/uploadResumePdf'); 
+const { protect } = require('../middleware/auth'); 
 
-router.post(
-    "/upload",
-    auth,
-    upload.single("resume"),
-    uploadResume
-);
-
-router.get(
-    "/mine",
-    auth,
-    getMyResumes
-);
+// Clean, comma-separated Express execution chain
+router.post('/upload', protect, uploadResumePdf, uploadResume);
 
 module.exports = router;
