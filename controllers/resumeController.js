@@ -1,5 +1,5 @@
 const Resume = require('../models/Resume');
-const analyzeResume = require('../services/geminiService');
+const analyzeResume = require('../service/geminiService');
 const pdfParse = require('pdf-parse');
 
 /**
